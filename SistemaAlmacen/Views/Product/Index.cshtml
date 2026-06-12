@@ -1,0 +1,173 @@
+﻿@{
+    ViewData["Title"] = "Productos";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 text-end">
+            <button class="btn btn-primary" onclick="openModalProducto()">Agregar</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Codigo</th>
+                        <th scope="col">Unidad de Medida</th>
+                        <th scope="col">Categoría</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody id="tbProducts"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="mDetalleProducto">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Producto</h5>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="idProducto" />
+                <div class="row">
+                    <div class="col-12">
+                        <label for="txtNombre">Nombre</label>
+                        <input type="text" class="form-control" id="txtNombre">
+                    </div>
+                    <div class="col-12">
+                        <label for="txtCodigo">Codigo</label>
+                        <input type="text" class="form-control" id="txtCodigo">
+                    </div>
+                    <div class="col-12">
+                        <label for="txtUnidadDeMedida">Unidad de Medida</label>
+                        <input type="text" class="form-control" id="txtUnidadDeMedida">
+                    </div>
+                    <div class="col-12">
+                        <label for="selCategoria">Categoria</label>
+                        <select class="form-control" id="selCategoria"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="saveProducts()">Guardar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', () => {
+        getProducts();
+        loadDropCategoria();
+    });
+
+    function openModalProducto(productoId, nombre, codigo, unidadDeMedida, categoriaId){
+
+        if(productoId == undefined){
+            document.getElementById('idProducto').value = '';
+            document.getElementById('txtNombre').value = '';
+            document.getElementById('txtCodigo').value = '';
+            document.getElementById('txtUnidadDeMedida').value = '';
+            document.getElementById('selCategoria').value = '';
+        }
+        else{
+            document.getElementById('idProducto').value = productoId;
+            document.getElementById('txtNombre').value = nombre;
+            document.getElementById('txtCodigo').value = codigo;
+            document.getElementById('txtUnidadDeMedida').value = unidadDeMedida;
+            document.getElementById('selCategoria').value = categoriaId;
+        }        
+
+       $('#mDetalleProducto').modal('show');
+    }
+
+    function getProducts(){
+        fetch('@Url.Action("GetProducts", "Product")')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al obtener datos');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);            
+
+            data.forEach(item => {
+                document.getElementById('tbProducts').innerHTML +=
+                `<tr>
+                    <td>${item.productoId}</td>
+                    <td>${item.nombre}</td>
+                    <td>${item.codigo}</td>
+                    <td>${item.unidadDeMedida}</td>
+                    <td>${item.categoria}</td>
+                    <td><button class="btn btn-success" onclick="openModalProducto(${item.productoId}, '${item.nombre}', '${item.codigo}', '${item.unidadDeMedida}', ${item.categoriaId})">Editar</button></td>
+                 </tr>`;
+             });
+
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }
+
+    function loadDropCategoria(){
+        fetch('@Url.Action("GetDropCategorias", "Product")')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al obtener datos');
+            }
+            return response.json();
+        })
+        .then(data => {
+             document.getElementById('selCategoria').innerHTML = '<option></option>';
+
+            data.forEach(item => {
+                document.getElementById('selCategoria').innerHTML +=
+                `<option value="${item.value}">${item.text}</Option>`;
+             });
+
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }
+
+    function saveProducts(){
+        const producto = {
+            productoId: document.getElementById("idProducto").value,
+            nombre: document.getElementById("txtNombre").value,
+            codigo: document.getElementById("txtCodigo").value,
+            unidadDeMedida: document.getElementById("txtUnidadDeMedida").value,
+            categoriaId: document.getElementById("selCategoria").value
+        };
+
+        fetch('@Url.Action("SaveChangeProducts", "Product")', {
+            method: 'POST', 
+            headers: {
+                'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify(producto)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al guardar datos');
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert("Guardado con éxito");
+        })
+        .catch(error => {
+            console.error("Error en la petición:", error);
+        });
+    }
+
+</script>
