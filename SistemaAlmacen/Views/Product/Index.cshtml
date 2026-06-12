@@ -108,7 +108,10 @@
                     <td>${item.codigo}</td>
                     <td>${item.unidadDeMedida}</td>
                     <td>${item.categoria}</td>
-                    <td><button class="btn btn-success" onclick="openModalProducto(${item.productoId}, '${item.nombre}', '${item.codigo}', '${item.unidadDeMedida}', ${item.categoriaId})">Editar</button></td>
+                    <td>
+                        <button class="btn btn-success" onclick="openModalProducto(${item.productoId}, '${item.nombre}', '${item.codigo}', '${item.unidadDeMedida}', ${item.categoriaId})">Editar</button>
+                        <button class="btn btn-danger" onclick="deleteProduct(${item.productoId})">Eliminar</button>
+                    </td>
                  </tr>`;
              });
 
@@ -141,33 +144,53 @@
     }
 
     function saveProducts(){
+        const productoId = document.getElementById("idProducto").value;
         const producto = {
-            productoId: document.getElementById("idProducto").value,
-            nombre: document.getElementById("txtNombre").value,
-            codigo: document.getElementById("txtCodigo").value,
-            unidadDeMedida: document.getElementById("txtUnidadDeMedida").value,
-            categoriaId: document.getElementById("selCategoria").value
+            ProductoId: productoId ? parseInt(productoId) : 0,
+            Nombre: document.getElementById("txtNombre").value,
+            Codigo: document.getElementById("txtCodigo").value,
+            UnidadDeMedida: parseInt(document.getElementById("txtUnidadDeMedida").value) || null,
+            CategoriaId: parseInt(document.getElementById("selCategoria").value)
         };
 
         fetch('@Url.Action("SaveChangeProducts", "Product")', {
-            method: 'POST', 
+            method: 'POST',
+            body: JSON.stringify(producto),
             headers: {
-                'Content-Type': 'application/json' 
-            },
-            body: JSON.stringify(producto)
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
         })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Error al guardar datos');
             }
-            return response.json();
-        })
-        .then(data => {
+            $('#mDetalleProducto').modal('hide');
+            document.getElementById('tbProducts').innerHTML = '';
+            getProducts();
             alert("Guardado con éxito");
         })
         .catch(error => {
             console.error("Error en la petición:", error);
         });
+    }
+
+    function deleteProduct(id){
+        fetch(`@Url.Action("DeleteProduct", "Product")?productId=${parseInt(id)}`, {
+            method: 'POST'
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al guardar datos');
+                }
+                $('#mDetalleProducto').modal('hide');
+                document.getElementById('tbProducts').innerHTML = '';
+                getProducts();
+                alert("Cambios realizados con éxito");
+            })
+            .catch(error => {
+                console.error("Error en la petición:", error);
+            });
     }
 
 </script>

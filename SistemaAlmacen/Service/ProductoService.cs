@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SistemaAlmacen.Models;
+using SistemaAlmacen.Models.Dto.Request;
 using SistemaAlmacen.Models.Dto.Response;
 using SistemaAlmacen.Repository;
 
@@ -32,14 +33,22 @@ namespace SistemaAlmacen.Service
             return producto;
         }
 
-        public void Save(Producto producto)
+        public void Save(ProductRequest producto)
         {
+            var entity = new Producto{
+                ProductoId = producto.ProductoId,
+                CategoriaId = producto.CategoriaId,
+                Codigo = producto.Codigo,
+                Nombre = producto.Nombre,
+                UnidadDeMedida = producto.UnidadDeMedida
+            };
+            
             if (producto.ProductoId == 0) { 
-                _productoRepository.Add(producto);
+                _productoRepository.Add(entity);
             }
             else
             {
-                _productoRepository.Update(producto);
+                _productoRepository.Update(entity);
             }
         }
 

@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SistemaAlmacen.Models;
+using SistemaAlmacen.Models.Dto.Request;
 using SistemaAlmacen.Service;
 
 namespace SistemaAlmacen.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class ProductController : Controller
     {
         private readonly ProductoService _productoService;
@@ -17,7 +20,7 @@ namespace SistemaAlmacen.Controllers
             return View();
         }
 
-        [HttpGet]
+        [HttpGet("GetProducts")]
         public IActionResult GetProducts()
         {
             var products = _productoService.Get();
@@ -25,21 +28,21 @@ namespace SistemaAlmacen.Controllers
         }
 
 
-        [HttpPost]
-        public IActionResult SaveChangeProducts([FromBody]Producto producto)
+        [HttpPost("SaveChangeProducts")]
+        public IActionResult SaveChangeProducts([FromBody] ProductRequest producto)
         {
             _productoService.Save(producto);
             return Ok();
         }
 
-        [HttpPost]
+        [HttpPost("DeleteProduct")]
         public IActionResult DeleteProduct(int productId)
         {
             _productoService.Delete(productId);
             return Ok();
         }
 
-        [HttpGet]
+        [HttpGet("GetDropCategorias")]
         public IActionResult GetDropCategorias() => Json(_productoService.GetDropCategorias());
 
     }
