@@ -1,9 +1,11 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using SistemaAlmacen.Filters;
 using SistemaAlmacen.Models;
 
 namespace SistemaAlmacen.Controllers
 {
+    [FilterSession]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

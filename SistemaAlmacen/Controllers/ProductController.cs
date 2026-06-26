@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SistemaAlmacen.Filters;
 using SistemaAlmacen.Models;
 using SistemaAlmacen.Models.Dto.Request;
 using SistemaAlmacen.Service;
@@ -7,6 +8,7 @@ namespace SistemaAlmacen.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [FilterSession]
     public class ProductController : Controller
     {
         private readonly ProductoService _productoService;

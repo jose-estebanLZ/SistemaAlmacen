@@ -1,0 +1,49 @@
+body{
+    background:#f9f9f9;
+    color:#3a3a3a;
+    font-family:'Work Sans',sans-serif;
+}
+
+.login-card{
+    max-width:460px;
+    border:1px solid #e5e5e5;
+    border-radius:12px;
+    background:#fff;
+    padding:3rem;
+}
+
+.login-title{
+    font-family:'Hanken Grotesk',sans-serif;
+    font-weight:700;
+    color:#3a3a3a;
+}
+
+.form-control{
+    border-radius:8px;
+    padding:.75rem 1rem;
+}
+
+.form-control:focus{
+    border-color:#e65e10;
+    box-shadow:0 0 0 .15rem rgba(230,94,16,.15);
+}
+
+.btn-login{
+    background:#0e411e;
+    color:#fff;
+    padding:.8rem;
+    font-weight:600;
+}
+
+.btn-login:hover{
+    background:#0b3518;
+}
+
+.text-link{
+    color:#e65e10;
+    text-decoration:none;
+}
+
+.text-link:hover{
+    text-decoration:underline;
+}

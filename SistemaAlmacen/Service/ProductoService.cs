@@ -10,24 +10,24 @@ namespace SistemaAlmacen.Service
     {
         private ProductoRepository _productoRepository;
         private CategoriaRepository _categoriaRepository;
+        private StoredProcedureExecRepository _spExecRepository;
         public ProductoService() 
         { 
             _productoRepository = new ProductoRepository();
             _categoriaRepository = new CategoriaRepository();
+            _spExecRepository = new StoredProcedureExecRepository();
         }
 
         public List<ProductoDto> Get()
         {
-            var categorias = _categoriaRepository.Get();
-
-            var producto = _productoRepository.Get().Select(x => new ProductoDto
+            var producto = _spExecRepository.ObtenerProductos().Select(x => new ProductoDto
             {
                 ProductoId = x.ProductoId,
                 CategoriaId = x.CategoriaId,
                 Codigo = x.Codigo,
                 Nombre = x.Nombre,
                 UnidadDeMedida = x.UnidadDeMedida,
-                Categoria = categorias.First(c => c.CategoriaId.Equals(x.CategoriaId)).Nombre
+                Categoria = x.Categoria
             }).ToList();
 
             return producto;
